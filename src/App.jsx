@@ -7,6 +7,7 @@ import AuthModal from './components/AuthModal';
 import Recommendations from './components/Recommendations';
 import HelpBot from './components/HelpBot';
 import NotificationCenter from './components/NotificationCenter';
+import { getAIReasoning } from './utils/gemini';
 import { performSmartMatching, getNavigationDirection, performEventPulseQA, findMyPeers } from './utils/aiAgent';
 import { createNewSession, saveChatSession, getChatSessions, logoutUser } from './utils/db';
 import { Compass, Sparkles, Network, PanelLeft, LogIn } from 'lucide-react';
@@ -108,42 +109,49 @@ function App() {
     setCurrentInputContext(text);
 
     setTimeout(async () => {
-      let updatedNavDirection = navDirection;
-      let updatedEventsData = eventsData;
-      let updatedPeersData = peersData;
+      try {
+        let updatedNavDirection = navDirection;
+        let updatedEventsData = eventsData;
+        let updatedPeersData = peersData;
 
-      const qaResponse = performEventPulseQA(text);
-      if (qaResponse) {
-         updatedNavDirection = qaResponse;
-         setAiInsight(""); // Clear insights for Q&A
-      } else {
-         updatedEventsData = performSmartMatching(text, user);
-         updatedNavDirection = getNavigationDirection(updatedEventsData);
-         updatedPeersData = findMyPeers(text);
-         
-         // Get AI Reasoning async
-         getAIReasoning(user || { name: 'Guest', bio: '', interests: [] }, updatedEventsData, text).then(res => setAiInsight(res));
-      }
+        const qaResponse = performEventPulseQA(text);
+        if (qaResponse) {
+           updatedNavDirection = qaResponse;
+           setAiInsight(""); // Clear insights for Q&A
+        } else {
+           updatedEventsData = performSmartMatching(text, user);
+           updatedNavDirection = getNavigationDirection(updatedEventsData);
+           updatedPeersData = findMyPeers(text);
+           
+           // Get AI Reasoning async
+           getAIReasoning(user || { name: 'Guest', bio: '', interests: [] }, updatedEventsData, text).then(res => setAiInsight(res));
+        }
 
-      setNavDirection(updatedNavDirection);
-      setEventsData(updatedEventsData);
-      setPeersData(updatedPeersData);
-      
-      if(user) {
-        const newTitle = text.length > 25 ? text.substring(0, 25) + '...' : text;
-        const activeSessionObj = {
-            id: activeSessionId,
-            title: sessionsList.find(s=>s.id===activeSessionId)?.title === "New Search" ? newTitle : sessionsList.find(s=>s.id===activeSessionId)?.title,
-            currentInputContext: text,
-            navDirection: updatedNavDirection,
-            sessions: updatedEventsData,
-            peers: updatedPeersData,
-            createdAt: sessionsList.find(s=>s.id===activeSessionId)?.createdAt || new Date().toISOString()
-        };
-        await syncActiveSession(activeSessionObj);
+        setNavDirection(updatedNavDirection);
+        setEventsData(updatedEventsData);
+        setPeersData(updatedPeersData);
+        
+        if(user && activeSessionId) {
+          const currentSession = sessionsList.find(s=>s.id===activeSessionId);
+          const newTitle = text.length > 25 ? text.substring(0, 25) + '...' : text;
+          
+          const activeSessionObj = {
+              id: activeSessionId,
+              title: currentSession?.title === "New Search" ? newTitle : (currentSession?.title || newTitle),
+              currentInputContext: text,
+              navDirection: updatedNavDirection,
+              sessions: updatedEventsData,
+              peers: updatedPeersData,
+              createdAt: currentSession?.createdAt || new Date().toISOString()
+          };
+          await syncActiveSession(activeSessionObj);
+        }
+      } catch (err) {
+        console.error("Search Error:", err);
+        setNavDirection("I encountered an issue processing your request. Please try again or refine your query.");
+      } finally {
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
     }, 800);
   };
 
@@ -152,20 +160,28 @@ function App() {
       alert("Please tell the concierge about your background first so we can match you!");
       return;
     }
-    const newPeers = findMyPeers(currentInputContext);
-    setPeersData(newPeers);
-    
-    if (user) {
-      const activeSessionObj = {
-          id: activeSessionId,
-          title: sessionsList.find(s=>s.id===activeSessionId)?.title,
-          currentInputContext,
-          navDirection,
-          sessions: eventsData,
-          peers: newPeers,
-          createdAt: sessionsList.find(s=>s.id===activeSessionId)?.createdAt
-      };
-      await syncActiveSession(activeSessionObj);
+    setIsLoading(true);
+    try {
+      const newPeers = findMyPeers(currentInputContext);
+      setPeersData(newPeers);
+      
+      if (user && activeSessionId) {
+        const currentSession = sessionsList.find(s=>s.id===activeSessionId);
+        const activeSessionObj = {
+            id: activeSessionId,
+            title: currentSession?.title || "Search",
+            currentInputContext: currentInputContext,
+            navDirection: navDirection,
+            sessions: eventsData,
+            peers: newPeers,
+            createdAt: currentSession?.createdAt || new Date().toISOString()
+        };
+        await syncActiveSession(activeSessionObj);
+      }
+    } catch (err) {
+      console.error("Networking Error:", err);
+    } finally {
+      setIsLoading(false);
     }
     document.getElementById("peers-section")?.scrollIntoView({ behavior: 'smooth' });
   };
