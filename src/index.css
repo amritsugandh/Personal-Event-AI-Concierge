@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .shadow-glow-cyan {
+    box-shadow: 0 0 20px -3px rgba(34, 211, 238, 0.6), 0 4px 6px -4px rgba(34, 211, 238, 0.2);
+  }
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #040914; /* Deep Tech Blue */
+  background-image: 
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.15) 0%, transparent 40%);
+  background-attachment: fixed;
+  color: #e2e8f0;
+}
+
+button, a, [role="button"], input[type="submit"], input[type="button"] {
+  cursor: pointer !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #020617; 
+}
+::-webkit-scrollbar-thumb {
+  background: #0891b2; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #06b6d4; 
+}
