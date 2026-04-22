@@ -1,16 +1,79 @@
-# React + Vite
+# 🎉 Personal Event AI Concierge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-powered event management platform that acts as your personal concierge for planning, organizing, and managing events effortlessly.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Overview
 
-## React Compiler
+**Personal Event AI Concierge** is designed to simplify event planning using Artificial Intelligence. It helps users organize events by providing smart recommendations, automating tasks, and managing guests efficiently.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 🤖 AI-powered event recommendations  
+- 📅 Smart scheduling and task management  
+- 👥 Guest management (Invites & RSVPs)  
+- 🎯 Personalized event planning  
+- 🔔 Real-time notifications  
+- 🌐 Responsive and user-friendly interface  
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend:**  
+- HTML, CSS, JavaScript / React  
+
+**Backend:**  
+- Node.js / Express  
+
+**Database:**  
+- MongoDB / MySQL / Firebase  
+
+**AI Integration:**  
+- OpenAI API / Machine Learning Models  
+
+---
+
+
+---
+
+## 📈 Future Enhancements
+
+- 🎤 Voice assistant integration  
+- 📊 Event analytics dashboard  
+- 🤝 Vendor integration (catering, decoration, etc.)  
+- 📱 Mobile application  
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository  
+2. Create a new branch (`git checkout -b feature-name`)  
+3. Commit your changes (`git commit -m "Add feature"`)  
+4. Push to your branch (`git push origin feature-name`)  
+5. Open a Pull Request  
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+**Amrit Sugandh**  
+GitHub: https://github.com/amritsugandh  
+
+---
+
+## ⭐ Support
+
+If you like this project, please give it a ⭐ on GitHub!
